@@ -12,30 +12,30 @@
 
     <!-- Navigation Icons -->
     <nav class="flex flex-col space-y-6">
-      <!-- Categories (Active) -->
-      <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center">
-        <svg class="w-6 h-6 text-black" viewBox="0 0 24 24" fill="currentColor">
+      <!-- Dashboard -->
+      <router-link to="/dashboard" class="w-12 h-12 rounded-xl flex items-center justify-center hover:bg-gray-800 transition-colors cursor-pointer" :class="$route.path === '/dashboard' ? 'bg-white' : ''">
+        <svg :class="$route.path === '/dashboard' ? 'w-6 h-6 text-black' : 'w-6 h-6 text-white'" viewBox="0 0 24 24" fill="currentColor">
           <rect x="3" y="3" width="7" height="7" rx="1"/>
           <rect x="14" y="3" width="7" height="7" rx="1"/>
           <rect x="3" y="14" width="7" height="7" rx="1"/>
           <rect x="14" y="14" width="7" height="7" rx="1"/>
         </svg>
-      </div>
+      </router-link>
 
-      <!-- Pizza Icon -->
-      <div class="w-12 h-12 rounded-xl flex items-center justify-center hover:bg-gray-800 transition-colors cursor-pointer">
-        <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
+      <!-- Menu Management -->
+      <router-link to="/menu-management" class="w-12 h-12 rounded-xl flex items-center justify-center hover:bg-gray-800 transition-colors cursor-pointer" :class="$route.path === '/menu-management' ? 'bg-white' : ''">
+        <svg :class="$route.path === '/menu-management' ? 'w-6 h-6 text-black' : 'w-6 h-6 text-white'" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
         </svg>
-      </div>
+      </router-link>
 
-      <!-- Document Icon -->
-      <div class="w-12 h-12 rounded-xl flex items-center justify-center hover:bg-gray-800 transition-colors cursor-pointer">
-        <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
+      <!-- Order Management -->
+      <router-link to="/order-management" class="w-12 h-12 rounded-xl flex items-center justify-center hover:bg-gray-800 transition-colors cursor-pointer" :class="$route.path === '/order-management' ? 'bg-white' : ''">
+        <svg :class="$route.path === '/order-management' ? 'w-6 h-6 text-black' : 'w-6 h-6 text-white'" viewBox="0 0 24 24" fill="currentColor">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/>
           <polyline points="14,2 14,8 20,8"/>
         </svg>
-      </div>
+      </router-link>
 
       <!-- User Icon -->
       <div class="w-12 h-12 rounded-xl flex items-center justify-center hover:bg-gray-800 transition-colors cursor-pointer">
@@ -58,3 +58,9 @@
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+</script>
