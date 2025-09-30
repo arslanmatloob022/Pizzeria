@@ -5,8 +5,14 @@
       <div class="w-full max-w-md">
         <!-- Brand Logo -->
         <div class="flex items-center justify-center mb-8">
-          <div class="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center">
-            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+          <div
+            class="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center"
+          >
+            <svg
+              class="w-5 h-5 text-white"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
               <circle cx="12" cy="8" r="3" />
               <circle cx="12" cy="16" r="2" />
             </svg>
@@ -16,8 +22,12 @@
         <!-- OTP Verification Form -->
         <div class="space-y-6">
           <div class="text-center">
-            <h1 class="text-3xl font-semibold text-gray-900 mb-2">OTP Verification</h1>
-            <p class="text-gray-600">Please fill in the information requested below.</p>
+            <h1 class="text-3xl font-semibold text-gray-900 mb-2">
+              OTP Verification
+            </h1>
+            <p class="text-gray-600">
+              Please fill in the information requested below.
+            </p>
           </div>
 
           <form @submit.prevent="handleSubmit" class="space-y-6">
@@ -26,21 +36,24 @@
               <input
                 v-for="(digit, index) in otpDigits"
                 :key="index"
-:ref="(el: any) => otpInputs[index] = el as HTMLInputElement"
+                :ref="(el: any) => otpInputs[index] = el as HTMLInputElement"
+                :placeholder="digit.length < 1 ? '0' : ''"
                 v-model="otpDigits[index]"
                 type="text"
                 maxlength="1"
                 :class="[
                   'w-16 h-16 text-center text-2xl font-semibold border-2 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors',
-                  otpError ? 'border-red-500' : 'border-gray-300'
+                  otpError ? 'border-red-500' : 'border-gray-300',
                 ]"
                 @input="handleOtpInput(index, $event)"
                 @keydown="handleKeydown(index, $event)"
                 @paste="handlePaste"
               />
             </div>
-            
-            <p v-if="otpError" class="text-red-500 text-sm text-center">{{ otpError }}</p>
+
+            <p v-if="otpError" class="text-red-500 text-sm text-center">
+              {{ otpError }}
+            </p>
 
             <!-- Verify OTP Button -->
             <button
@@ -90,7 +103,7 @@ const handleOtpInput = async (index: number, event: Event) => {
   if (value && /^\d$/.test(value)) {
     otpDigits.value[index] = value;
     otpError.value = "";
-    
+
     // Move to next input
     if (index < 3) {
       await nextTick();
@@ -115,13 +128,13 @@ const handlePaste = (event: ClipboardEvent) => {
   event.preventDefault();
   const pastedData = event.clipboardData?.getData("text") || "";
   const digits = pastedData.replace(/\D/g, "").slice(0, 4).split("");
-  
+
   digits.forEach((digit, index) => {
     if (index < 4) {
       otpDigits.value[index] = digit;
     }
   });
-  
+
   otpError.value = "";
 };
 
