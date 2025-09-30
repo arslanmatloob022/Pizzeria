@@ -81,7 +81,7 @@
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
               <tr v-for="order in paginatedOrders" :key="order.id" class="hover:bg-gray-50">
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ order.orderId }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ (order as any).orderId }}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ order.customer }}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ order.totalAmount }}</td>
                 <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">{{ order.address }}</td>
@@ -186,7 +186,7 @@ const currentPage = ref(1)
 const itemsPerPage = ref(10)
 const showConfirmModal = ref(false)
 const confirmAction = ref('')
-const selectedOrder = ref(null)
+const selectedOrder = ref<any>(null)
 
 const orders = ref([
   { id: 1, orderId: '#32156', customer: 'John Doe', totalAmount: '12.65', address: 'Block C, Sector 2', itemSummary: '2 Large Pizza', dateTime: 'Oct 5, 12:25 PM', paymentStatus: 'Not Paid', status: 'Received' },
@@ -286,9 +286,9 @@ const rejectOrder = (order: any) => {
 const executeAction = () => {
   if (selectedOrder.value) {
     if (confirmAction.value === 'confirm') {
-      selectedOrder.value.status = 'Confirmed'
+      (selectedOrder.value as any).status = 'Confirmed'
     } else {
-      selectedOrder.value.status = 'Rejected'
+      (selectedOrder.value as any).status = 'Rejected'
     }
   }
   closeConfirmModal()

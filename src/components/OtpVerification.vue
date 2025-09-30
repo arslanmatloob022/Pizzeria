@@ -26,7 +26,7 @@
               <input
                 v-for="(digit, index) in otpDigits"
                 :key="index"
-                :ref="el => otpInputs[index] = el"
+:ref="(el: any) => otpInputs[index] = el as HTMLInputElement"
                 v-model="otpDigits[index]"
                 type="text"
                 maxlength="1"
@@ -80,7 +80,7 @@ import { useRouter } from "vue-router";
 
 const otpDigits = ref(["", "", "", ""]);
 const otpError = ref("");
-const otpInputs = ref<HTMLInputElement[]>([]);
+const otpInputs = ref<(HTMLInputElement | null)[]>([]);
 const router = useRouter();
 
 const handleOtpInput = async (index: number, event: Event) => {
@@ -94,7 +94,8 @@ const handleOtpInput = async (index: number, event: Event) => {
     // Move to next input
     if (index < 3) {
       await nextTick();
-      otpInputs.value[index + 1]?.focus();
+      const nextInput = otpInputs.value[index + 1];
+      if (nextInput) nextInput.focus();
     }
   } else if (value) {
     // Clear invalid input
@@ -105,7 +106,8 @@ const handleOtpInput = async (index: number, event: Event) => {
 const handleKeydown = async (index: number, event: KeyboardEvent) => {
   if (event.key === "Backspace" && !otpDigits.value[index] && index > 0) {
     await nextTick();
-    otpInputs.value[index - 1]?.focus();
+    const prevInput = otpInputs.value[index - 1];
+    if (prevInput) prevInput.focus();
   }
 };
 
@@ -151,7 +153,8 @@ const handleSubmit = () => {
 const resendOtp = () => {
   otpDigits.value = ["", "", "", ""];
   otpError.value = "";
-  otpInputs.value[0]?.focus();
+  const firstInput = otpInputs.value[0];
+  if (firstInput) firstInput.focus();
   console.log("OTP resent");
 };
 </script>

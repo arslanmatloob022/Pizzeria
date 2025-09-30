@@ -729,8 +729,8 @@
           <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
             <h3 class="text-lg font-semibold mb-4">Confirm Delete</h3>
             <p class="text-gray-600 mb-6">
-              Are you sure you want to delete "{{
-                selectedDeleteItem?.name || selectedDeleteItem?.dishName
+              Are you sure you want to delete "{{ 
+                (selectedDeleteItem as any)?.name || (selectedDeleteItem as any)?.dishName 
               }}"? This action cannot be undone.
             </p>
             <div class="flex justify-end space-x-3">
@@ -763,7 +763,7 @@ const searchQuery = ref("");
 const showAddModal = ref(false);
 const showEditModal = ref(false);
 const showDeleteModal = ref(false);
-const selectedDeleteItem = ref(null);
+const selectedDeleteItem = ref<any>(null);
 const deleteType = ref("");
 const currentPage = ref(1);
 const itemsPerPage = ref(10);
@@ -788,7 +788,7 @@ const itemFormData = ref({
   category: "",
 });
 
-const editingItem = ref(null);
+const editingItem = ref<any>(null);
 
 const menuItems = ref([
   {
@@ -1184,8 +1184,8 @@ const viewItem = (item: any) => {
 const editItem = (item: any) => {
   editingItem.value = item;
   formData.value = {
-    title: item.name,
-    description: item.description,
+    title: (item as any).name,
+    description: (item as any).description,
     price: "12.99",
     size: "Medium",
   };
@@ -1200,8 +1200,8 @@ const deleteItem = (item: any) => {
 
 const submitForm = () => {
   if (showEditModal.value && editingItem.value) {
-    editingItem.value.name = formData.value.title;
-    editingItem.value.description = formData.value.description;
+    (editingItem.value as any).name = formData.value.title;
+    (editingItem.value as any).description = formData.value.description;
   } else {
     const newItem = {
       id: Date.now(),
@@ -1256,14 +1256,14 @@ const confirmDelete = () => {
   if (selectedDeleteItem.value) {
     if (deleteType.value === "category") {
       const index = menuItems.value.findIndex(
-        (i) => i.id === selectedDeleteItem.value.id
+        (i) => i.id === (selectedDeleteItem.value as any)?.id
       );
       if (index > -1) {
         menuItems.value.splice(index, 1);
       }
     } else if (deleteType.value === "menuItem") {
       const index = menuItemsData.value.findIndex(
-        (i) => i.id === selectedDeleteItem.value.id
+        (i) => i.id === (selectedDeleteItem.value as any)?.id
       );
       if (index > -1) {
         menuItemsData.value.splice(index, 1);
