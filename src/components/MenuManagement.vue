@@ -527,229 +527,28 @@
         </div>
       </div>
 
-      <!-- Add/Edit Modal -->
-      <div
-        v-if="showAddModal || showEditModal"
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-      >
-        <div class="bg-white rounded-lg w-full mx-4 relative" :class="activeTab === 'items' ? 'max-w-2xl' : 'max-w-md'">
-          <!-- Close Button -->
-          <button
-            @click="closeModal"
-            class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
-          >
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fill-rule="evenodd"
-                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </button>
-
-          <div class="p-6">
-            <h3 class="text-xl font-semibold mb-6 text-center">
-              {{
-                activeTab === "items"
-                  ? "Add Item"
-                  : showEditModal
-                  ? "Edit Category"
-                  : "Add New Category"
-              }}
-            </h3>
-
-            <!-- Category Form -->
-            <form
-              v-if="activeTab === 'categories'"
-              @submit.prevent="submitForm"
-            >
-              <div class="space-y-4">
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1"
-                    >Title</label
-                  >
-                  <input
-                    v-model="formData.title"
-                    type="text"
-                    required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
-                  />
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1"
-                    >Description</label
-                  >
-                  <textarea
-                    v-model="formData.description"
-                    rows="3"
-                    required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
-                  ></textarea>
-                </div>
-              </div>
-              <div class="flex justify-end space-x-3 mt-6">
-                <button
-                  type="button"
-                  @click="closeModal"
-                  class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-                >
-                  {{ showEditModal ? "Update" : "Add" }}
-                </button>
-              </div>
-            </form>
-
-            <!-- Item Form -->
-            <form v-else @submit.prevent="submitItemForm">
-              <div class="space-y-4">
-                <!-- Row 1: Name and Price -->
-                <div class="grid grid-cols-2 gap-4">
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                    <input
-                      v-model="itemFormData.name"
-                      type="text"
-                      placeholder="Enter Dish Name"
-                      required
-                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Price</label>
-                    <input
-                      v-model="itemFormData.price"
-                      type="text"
-                      placeholder="Enter Dish Price"
-                      required
-                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
-                    />
-                  </div>
-                </div>
-                
-                <!-- Row 2: Description (Full Width) -->
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                  <textarea
-                    v-model="itemFormData.description"
-                    rows="2"
-                    placeholder="Enter description here..."
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
-                  ></textarea>
-                </div>
-                
-                <!-- Row 3: Upload Video (Full Width) -->
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Upload Video</label>
-                  <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
-                    <svg class="w-6 h-6 text-gray-400 mx-auto mb-1" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
-                    </svg>
-                    <p class="text-sm text-gray-500">Upload Video in MP4 Format</p>
-                  </div>
-                </div>
-                
-                <!-- Row 4: TikTok and Instagram URLs -->
-                <div class="grid grid-cols-2 gap-4">
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Tiktok Video URL</label>
-                    <input
-                      v-model="itemFormData.tiktokUrl"
-                      type="text"
-                      placeholder="Paste Video Link"
-                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Instagram Video URL</label>
-                    <input
-                      v-model="itemFormData.instagramUrl"
-                      type="text"
-                      placeholder="Paste Video Link"
-                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
-                    />
-                  </div>
-                </div>
-                
-                <!-- Row 5: Ingredients (Full Width) -->
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Ingredients (Optional)</label>
-                  <textarea
-                    v-model="itemFormData.ingredients"
-                    rows="2"
-                    placeholder="Enter Dish Ingredients"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
-                  ></textarea>
-                </div>
-                
-                <!-- Row 6: Position and Category -->
-                <div class="grid grid-cols-2 gap-4">
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Position</label>
-                    <input
-                      v-model="itemFormData.position"
-                      type="text"
-                      placeholder="Enter Position"
-                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                    <select
-                      v-model="itemFormData.category"
-                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
-                    >
-                      <option value="">Select Category</option>
-                      <option value="Pizza">Pizza</option>
-                      <option value="Pasta">Pasta</option>
-                      <option value="Salad">Salad</option>
-                      <option value="Dessert">Dessert</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <button
-                type="submit"
-                class="w-full bg-red-500 text-white py-3 rounded-lg hover:bg-red-600 mt-6 font-medium"
-              >
-                Add Item
-              </button>
-            </form>
-          </div>
-        </div>
-        <!-- Delete Confirmation Modal -->
-        <div
-          v-if="showDeleteModal"
-          class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-        >
-          <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-            <h3 class="text-lg font-semibold mb-4">Confirm Delete</h3>
-            <p class="text-gray-600 mb-6">
-              Are you sure you want to delete "{{ 
-                (selectedDeleteItem as any)?.name || (selectedDeleteItem as any)?.dishName 
-              }}"? This action cannot be undone.
-            </p>
-            <div class="flex justify-end space-x-3">
-              <button
-                @click="closeDeleteModal"
-                class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-              <button
-                @click="confirmDelete"
-                class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- Modals -->
+      <CategoryModal
+        v-if="(showAddModal || showEditModal) && activeTab === 'categories'"
+        :is-edit="showEditModal"
+        :initial-data="formData"
+        @close="closeModal"
+        @submit="submitForm"
+      />
+      
+      <MenuItemModal
+        v-if="(showAddModal || showEditModal) && activeTab === 'items'"
+        :initial-data="itemFormData"
+        @close="closeModal"
+        @submit="submitItemForm"
+      />
+      
+      <ConfirmDeleteModal
+        v-if="showDeleteModal"
+        :item-name="(selectedDeleteItem as any)?.name || (selectedDeleteItem as any)?.dishName"
+        @close="closeDeleteModal"
+        @confirm="confirmDelete"
+      />
     </div>
   </div>
 </template>
@@ -757,6 +556,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import Sidebar from "./Sidebar.vue";
+import { CategoryModal, MenuItemModal, ConfirmDeleteModal } from "./modals";
 
 const activeTab = ref("categories");
 const searchQuery = ref("");
@@ -1198,16 +998,16 @@ const deleteItem = (item: any) => {
   showDeleteModal.value = true;
 };
 
-const submitForm = () => {
+const submitForm = (data: any) => {
   if (showEditModal.value && editingItem.value) {
-    (editingItem.value as any).name = formData.value.title;
-    (editingItem.value as any).description = formData.value.description;
+    (editingItem.value as any).name = data.title;
+    (editingItem.value as any).description = data.description;
   } else {
     const newItem = {
       id: Date.now(),
       uuid: Math.random().toString(36).substr(2, 9),
-      name: formData.value.title,
-      description: formData.value.description,
+      name: data.title,
+      description: data.description,
       status: "Enable",
     };
     menuItems.value.push(newItem);
@@ -1232,14 +1032,14 @@ const closeModal = () => {
   };
 };
 
-const submitItemForm = () => {
+const submitItemForm = (data: any) => {
   const newItem = {
     id: Date.now(),
     uuid: Math.random().toString(36).substr(2, 9),
-    dishName: itemFormData.value.name,
-    price: itemFormData.value.price,
-    description: itemFormData.value.description,
-    position: itemFormData.value.position || "A",
+    dishName: data.name,
+    price: data.price,
+    description: data.description,
+    position: data.position || "A",
     status: "Enable",
   };
   menuItemsData.value.push(newItem);

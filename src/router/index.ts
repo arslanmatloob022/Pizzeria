@@ -6,6 +6,7 @@ import NewPassword from '../components/NewPassword.vue'
 import RestaurantDashboard from '../components/RestaurantDashboard.vue'
 import MenuManagement from '../components/MenuManagement.vue'
 import OrderManagement from '../components/OrderManagement.vue'
+import { MenuPage, CartPage, CheckoutPage, OrderConfirmation } from '../components/customer'
 
 const routes = [
   {
@@ -42,6 +43,26 @@ const routes = [
     path: '/order-management',
     name: 'OrderManagement',
     component: OrderManagement
+  },
+  {
+    path: '/menu',
+    name: 'Menu',
+    component: MenuPage
+  },
+  {
+    path: '/cart',
+    name: 'Cart',
+    component: CartPage
+  },
+  {
+    path: '/checkout',
+    name: 'Checkout',
+    component: CheckoutPage
+  },
+  {
+    path: '/order-confirmation',
+    name: 'OrderConfirmation',
+    component: OrderConfirmation
   }
 ]
 
