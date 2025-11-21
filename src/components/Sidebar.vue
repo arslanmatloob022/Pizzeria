@@ -1,64 +1,244 @@
+<script setup lang="ts">
+import { useRouter, useRoute } from "vue-router";
+import { ref, computed, watch } from "vue";
+import { Menu, X, LogOut } from "lucide-vue-next";
+import { mediaData } from "@/lib/mediaData";
+import { useAuthStore } from "@/store/auth";
+
+interface MenuItem {
+  path: string;
+  label: string;
+  icon?: any;
+  roles?: string[];
+}
+
+interface Props {
+  title?: string;
+  menuItems: MenuItem[];
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  title: "App",
+});
+console.log(props.title);
+const emit = defineEmits<{
+  (e: "toggle", isOpen: boolean): void;
+}>();
+
+const router = useRouter();
+const route = useRoute();
+const isOpen = ref(false);
+const isMobileOpen = ref(false);
+
+const userRole = computed(() => localStorage.getItem("userRole") || "");
+
+const toggleSidebar = () => {
+  if (window.innerWidth < 1024) {
+    isMobileOpen.value = !isMobileOpen.value;
+  } else {
+    isOpen.value = !isOpen.value;
+    emit("toggle", isOpen.value);
+  }
+};
+
+const closeSidebarOnMobile = () => {
+  if (window.innerWidth < 1024) {
+    isMobileOpen.value = false;
+  }
+};
+
+const handleLogout = () => {
+  const authStore = useAuthStore();
+  authStore.logout();
+  router.push("/login");
+};
+
+watch(
+  () => route.path,
+  () => {
+    closeSidebarOnMobile();
+  }
+);
+</script>
+
 <template>
-  <div class="bg-black text-white w-20 lg:w-24 flex flex-col items-center py-6 fixed left-0 top-0 h-full z-40">
-    <!-- Logo -->
-    <div class="mb-8">
-      <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center">
-        <svg class="w-6 h-6 text-black" viewBox="0 0 24 24" fill="currentColor">
-          <circle cx="12" cy="8" r="3"/>
-          <circle cx="12" cy="16" r="2"/>
-        </svg>
-      </div>
+  <div
+    v-if="isMobileOpen"
+    class="fixed inset-0 z-40 bg-black/50 lg:hidden"
+    @click="toggleSidebar"
+  ></div>
+
+  <!-- Sidebar -->
+  <div
+    class="fixed inset-y-0 left-0 lg:left-4 rounded-2xl lg:my-3 z-50 bg-black text-white transition-all duration-300 ease-in-out"
+    :class="[
+      isMobileOpen ? 'translate-x-0' : '-translate-x-full',
+      'lg:translate-x-0',
+      isMobileOpen ? 'w-64' : isOpen ? 'lg:w-64 w-64' : 'lg:w-20 w-24',
+    ]"
+  >
+    <div
+      class="flex items-center justify-between h-16 border-b border-gray-400 px-4"
+    >
+      <!-- <h1
+        v-if="isOpen"
+        class="text-xl font-bold text-white transition-opacity duration-300"
+        :class="isOpen ? 'opacity-100' : 'opacity-0'"
+      >
+        {{ title }}
+      </h1> -->
+      <img :src="mediaData.logo" alt="Logo" class="h-10" v-if="!isOpen" />
+
+      <button
+        @click="toggleSidebar"
+        class="p-02 rounded-full hover:bg-gray-800 transition-colors ml-auto"
+      >
+        <!-- <ChevronLeft v-if="isOpen" :size="24" class="hidden lg:block" />
+        <ChevronRight v-else :size="24" class="hidden lg:block" /> -->
+        <X v-if="isMobileOpen" :size="24" class="lg:hidden" />
+        <Menu v-else :size="24" class="lg:hidden" />
+      </button>
     </div>
 
-    <!-- Navigation Icons -->
-    <nav class="flex flex-col space-y-6">
-      <!-- Dashboard -->
-      <router-link to="/dashboard" class="w-12 h-12 rounded-xl flex items-center justify-center hover:bg-gray-800 transition-colors cursor-pointer" :class="$route.path === '/dashboard' ? 'bg-white' : ''">
-        <svg :class="$route.path === '/dashboard' ? 'w-6 h-6 text-black' : 'w-6 h-6 text-white'" viewBox="0 0 24 24" fill="currentColor">
-          <rect x="3" y="3" width="7" height="7" rx="1"/>
-          <rect x="14" y="3" width="7" height="7" rx="1"/>
-          <rect x="3" y="14" width="7" height="7" rx="1"/>
-          <rect x="14" y="14" width="7" height="7" rx="1"/>
-        </svg>
-      </router-link>
+    <!-- Navigation -->
+    <nav class="mt-8 relative pl-2">
+      <div class="space-y-1">
+        <template v-for="item in menuItems" :key="item.path">
+          <div
+            v-if="!item.roles || item.roles.includes(userRole)"
+            class="relative"
+          >
+            <!-- Active item with curved background -->
+            <div
+              v-if="route.path === item.path"
+              class="absolute inset-0 curved-active-bg"
+            ></div>
 
-      <!-- Menu Management -->
-      <router-link to="/menu-management" class="w-12 h-12 rounded-xl flex items-center justify-center hover:bg-gray-800 transition-colors cursor-pointer" :class="$route.path === '/menu-management' ? 'bg-white' : ''">
-        <svg :class="$route.path === '/menu-management' ? 'w-6 h-6 text-black' : 'w-6 h-6 text-white'" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-        </svg>
-      </router-link>
-
-      <!-- Order Management -->
-      <router-link to="/order-management" class="w-12 h-12 rounded-xl flex items-center justify-center hover:bg-gray-800 transition-colors cursor-pointer" :class="$route.path === '/order-management' ? 'bg-white' : ''">
-        <svg :class="$route.path === '/order-management' ? 'w-6 h-6 text-black' : 'w-6 h-6 text-white'" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/>
-          <polyline points="14,2 14,8 20,8"/>
-        </svg>
-      </router-link>
-
-      <!-- User Icon -->
-      <div class="w-12 h-12 rounded-xl flex items-center justify-center hover:bg-gray-800 transition-colors cursor-pointer">
-        <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-          <circle cx="12" cy="7" r="4"/>
-        </svg>
+            <router-link
+              :to="item.path"
+              class="relative flex items-center h-12 px-2 transition-colors rounded-lg"
+              :class="{
+                'text-black active-menu': route.path === item.path,
+                'text-gray-400 hover:text-white hover:bg-gray-900 ':
+                  route.path !== item.path,
+                'justify-center': !isOpen && !isMobileOpen,
+                'justify-start': isOpen || isMobileOpen,
+                '': isOpen || isMobileOpen,
+              }"
+            >
+              <component
+                v-if="item.icon"
+                :is="item.icon"
+                :size="24"
+                class="relative z-10 flex-shrink-0"
+              />
+              <span
+                v-if="isOpen || isMobileOpen"
+                class="ml-3 text-sm font-medium relative z-10 whitespace-nowrap transition-opacity duration-300"
+                :class="isOpen || isMobileOpen ? 'opacity-100' : 'opacity-0'"
+              >
+                {{ item.label }}
+              </span>
+            </router-link>
+          </div>
+        </template>
       </div>
     </nav>
 
-    <!-- Logout Icon at Bottom -->
-    <div class="mt-auto">
-      <div class="w-12 h-12 rounded-xl flex items-center justify-center hover:bg-gray-800 transition-colors cursor-pointer">
-        <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-          <polyline points="16,17 21,12 16,7"/>
-          <line x1="21" y1="12" x2="9" y2="12"/>
-        </svg>
+    <!-- Logout Button at Bottom -->
+    <div class="absolute bottom-8 border-t border-gray-400 left-0 right-0 px-2">
+      <div class="relative mx-2">
+        <button
+          @click="handleLogout"
+          class="relative flex items-center h-14 w-full px-4 text-gray-400 hover:text-white hover:bg-gray-900 transition-colors rounded-lg"
+          :class="{
+            'justify-center': !isOpen && !isMobileOpen,
+            'justify-start': isOpen || isMobileOpen,
+          }"
+        >
+          <LogOut :size="24" class="relative z-10 flex-shrink-0" />
+          <span
+            v-if="isOpen || isMobileOpen"
+            class="ml-3 text-sm font-medium relative z-10 whitespace-nowrap transition-opacity duration-300"
+            :class="isOpen || isMobileOpen ? 'opacity-100' : 'opacity-0'"
+          >
+            Logout
+          </span>
+        </button>
       </div>
     </div>
   </div>
+
+  <button
+    :class="isMobileOpen ? 'hidden' : 'block'"
+    @click="toggleSidebar"
+    class="fixed top-4 left-4 z-50 lg:hidden p-3 bg-black text-white rounded-full shadow-lg"
+  >
+    <Menu :size="24" />
+  </button>
 </template>
 
-<script setup lang="ts">
-// Router is used in template for $route
-</script>
+<style scoped>
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+nav::-webkit-scrollbar {
+  width: 4px;
+}
+
+nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+nav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+nav::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.curved-active-bg {
+  background: white;
+  background-color: white;
+  position: relative;
+}
+
+.active-menu {
+  background: #fff !important;
+  background-color: aliceblue !important;
+  padding: 0 !important;
+  border-radius: 18px 0 0 18px !important;
+}
+
+.curved-active-bg::before {
+  content: "";
+  position: absolute;
+  top: 20px;
+  right: 0;
+  left: 48px;
+  width: 60%;
+  height: 20px;
+  background-color: #fff;
+  background: transparent;
+  transform: rotate(36deg);
+  box-shadow: 0 10px 0 0 rgb(255, 255, 255);
+}
+
+.curved-active-bg::after {
+  content: "";
+  position: absolute;
+  top: -15px;
+  right: 0;
+  left: 30px;
+  /* bottom: 0; */
+  width: 60%;
+  height: 20px;
+  background-color: #6c0000;
+  background: transparent;
+  transform: rotate(140deg);
+  box-shadow: 0 -10px 0 0 rgb(255, 255, 255);
+}
+</style>

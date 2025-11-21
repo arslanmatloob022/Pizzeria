@@ -1,74 +1,64 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import LoginForm from '../components/LoginForm.vue'
-import ForgotPassword from '../components/ForgotPassword.vue'
-import OtpVerification from '../components/OtpVerification.vue'
-import NewPassword from '../components/NewPassword.vue'
-import RestaurantDashboard from '../components/RestaurantDashboard.vue'
-import MenuManagement from '../components/MenuManagement.vue'
-import OrderManagement from '../components/OrderManagement.vue'
-import { MenuPage, CartPage, CheckoutPage, OrderConfirmation } from '../components/customer'
+import {
+  createRouter,
+  createWebHistory,
+  type RouteRecordRaw,
+} from "vue-router";
+import { adminRoutes } from "./adminroutes";
+import { superAdminRoutes } from "./superadminroutes";
+import { UserRoutes } from "./userroutes";
 
-const routes = [
-  {
-    path: '/',
-    name: 'Login',
-    component: LoginForm
-  },
-  {
-    path: '/forgot-password',
-    name: 'ForgotPassword',
-    component: ForgotPassword
-  },
-  {
-    path: '/otp-verification',
-    name: 'OtpVerification',
-    component: OtpVerification
-  },
-  {
-    path: '/new-password',
-    name: 'NewPassword',
-    component: NewPassword
-  },
-  {
-    path: '/dashboard',
-    name: 'Dashboard',
-    component: RestaurantDashboard
-  },
-  {
-    path: '/menu-management',
-    name: 'MenuManagement',
-    component: MenuManagement
-  },
-  {
-    path: '/order-management',
-    name: 'OrderManagement',
-    component: OrderManagement
-  },
-  {
-    path: '/menu',
-    name: 'Menu',
-    component: MenuPage
-  },
-  {
-    path: '/cart',
-    name: 'Cart',
-    component: CartPage
-  },
-  {
-    path: '/checkout',
-    name: 'Checkout',
-    component: CheckoutPage
-  },
-  {
-    path: '/order-confirmation',
-    name: 'OrderConfirmation',
-    component: OrderConfirmation
+declare module "vue-router" {
+  interface RouteMeta {
+    requiresAuth?: boolean;
+    role?: string;
   }
-]
+}
+
+const routes: RouteRecordRaw[] = [
+  {
+    path: "/login",
+    name: "Login",
+    component: () => import("../pages/shared/Login.vue"),
+  },
+  {
+    path: "/forgot-password",
+    name: "Forgot Password",
+    component: () => import("../pages/shared/ForgotPassword.vue"),
+  },
+  {
+    path: "/otp-verification/:email",
+    name: "OtpVerification",
+    component: () => import("../pages/shared/OtpVerification.vue"),
+    props: true,
+  },
+  {
+    path: "/reset-password/:email",
+    name: "ResetPassword",
+    component: () => import("../pages/shared/NewPassword.vue"),
+    props: true,
+  },
+
+  ...superAdminRoutes,
+  ...adminRoutes,
+  ...UserRoutes,
+];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
-})
+  routes,
+});
 
-export default router
+router.beforeEach((to, _, next) => {
+  const isAuthenticated = localStorage.getItem("token");
+  const userRole = localStorage.getItem("userRole");
+
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    next("/login");
+  } else if (to.meta.role && to.meta.role !== userRole) {
+    next("/login");
+  } else {
+    next();
+  }
+});
+
+export default router;

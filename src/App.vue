@@ -1,10 +1,4 @@
 <template>
-  <DemoNavigation />
   <router-view />
+  <Toaster />
 </template>
-
-<script setup lang="ts">
-import DemoNavigation from './components/DemoNavigation.vue'
-</script>
-
-

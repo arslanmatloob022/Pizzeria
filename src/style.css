@@ -1,3 +1,80 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-poppins: "Poppins", sans-serif;
+  --color-red: #da291c;
+  --color-lightText: #a3a3a3;
+  --color-darkText: #2a2a2a;
+  --color-lightbg: #f7f7f7;
+  --color-lightborders: #ededed;
+  --color-darkText2: #3d3d3d;
+  --color-label: #747474;
+  --color-success: #04d91d;
+}
+
+@layer base {
+  body {
+    @apply font-poppins;
+  }
+  h1 {
+    @apply font-medium text-lg lg:text-3xl tracking-[-2%] text-black;
+  }
+  span {
+    @apply font-normal text-sm leading-6 text-lightText;
+  }
+  h3 {
+    @apply font-medium text-base text-darkText;
+  }
+  h4 {
+    @apply font-normal text-[15px] text-darkText2;
+  }
+  label {
+    @apply text-label font-medium text-[14px] leading-[18.97px];
+  }
+}
+
+@layer utilities {
+  .show-text-100 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+  }
+
+  .show-text-50 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #000;
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #888;
+  }
+
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #b0b0b0 #f1f1f1;
+  }
+}
