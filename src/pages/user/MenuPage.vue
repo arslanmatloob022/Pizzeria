@@ -14,9 +14,7 @@ const handleVideoScroll =
     "handleVideoScroll"
   );
 
-// Get navbar visibility state
-const isNavbarVisible = inject<Ref<boolean>>("isNavbarVisible", ref(true));
-const navbarHeight = inject<Ref<number>>("navbarHeight", ref(80));
+
 
 // Check if mobile view
 const isMobile = ref(false);
@@ -184,32 +182,7 @@ watch(
   { immediate: true }
 );
 
-const FALLBACK_NAVBAR_HEIGHT = 80;
 
-const videoDimensions = computed(() => {
-  // On mobile, navbar is hidden so no offset
-  if (isMobile.value) {
-    const heightValue =
-      viewportHeight.value > 0 ? `${viewportHeight.value}px` : "100dvh";
-    return {
-      height: heightValue,
-      minHeight: heightValue,
-      offset: 0,
-    };
-  }
-
-  const navHeight = navbarHeight?.value ?? FALLBACK_NAVBAR_HEIGHT;
-  const offset =
-    isNavbarVisible?.value ?? true ? navHeight || FALLBACK_NAVBAR_HEIGHT : 0;
-
-  const size = `calc(100vh - ${offset}px)`;
-
-  return {
-    height: size,
-    minHeight: size,
-    offset,
-  };
-});
 
 
 
