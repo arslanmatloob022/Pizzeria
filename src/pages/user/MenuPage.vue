@@ -56,9 +56,7 @@ const videoWrappers = ref<(HTMLElement | null)[]>([]);
 const activeVideoIndex = ref(0);
 const scrollUpdateId = ref<number | null>(null);
 
-const mobileButtonOffset = computed(
-  () => "calc(env(safe-area-inset-bottom, 0px) + 24px)"
-);
+
 
 const setVideoRef = (
   el: Element | ComponentPublicInstance | null,
@@ -213,25 +211,9 @@ const videoDimensions = computed(() => {
   };
 });
 
-const videoContainerStyle = computed(() => {
-  const { height, minHeight } = videoDimensions.value;
 
-  return {
-    height,
-    minHeight,
-  };
-});
 
-const videoSectionStyle = computed(() => {
-  const padding = videoDimensions.value.offset
-    ? `${videoDimensions.value.offset}px`
-    : "0px";
 
-  return {
-    paddingTop: padding,
-    scrollPaddingTop: padding,
-  };
-});
 
 // Animation state
 const addingToCart = ref<number | null>(null);
